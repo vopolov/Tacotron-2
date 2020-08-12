@@ -27,6 +27,9 @@ class Feeder:
 		# Load metadata
 		self._mel_dir = os.path.join(os.path.dirname(metadata_filename), 'mels')
 		self._linear_dir = os.path.join(os.path.dirname(metadata_filename), 'linear')
+
+		self._predict_linear = os.path.isdir(self._linear_dir)
+
 		with open(metadata_filename, encoding='utf-8') as f:
 			self._metadata = [line.strip().split('|') for line in f]
 			frame_shift_ms = hparams.hop_size / hparams.sample_rate
@@ -128,7 +131,13 @@ class Feeder:
 		mel_target = np.load(os.path.join(self._mel_dir, meta[1]))
 		#Create parallel sequences containing zeros to represent a non finished sequence
 		token_target = np.asarray([0.] * (len(mel_target) - 1))
-		linear_target = np.load(os.path.join(self._linear_dir, meta[2]))
+
+		if self._predict_linear:
+			linear_target = np.load(os.path.join(self._linear_dir, meta[2]))
+		else:
+			linear_shape = *mel_target.shape[:-1], self._hparams.num_freq
+			linear_target = np.zeros(shape=linear_shape, dtype=mel_target.dtype)
+
 		return (input_data, mel_target, token_target, linear_target, len(mel_target))
 
 	def make_test_batches(self):
@@ -192,7 +201,13 @@ class Feeder:
 		mel_target = np.load(os.path.join(self._mel_dir, meta[1]))
 		#Create parallel sequences containing zeros to represent a non finished sequence
 		token_target = np.asarray([0.] * (len(mel_target) - 1))
-		linear_target = np.load(os.path.join(self._linear_dir, meta[2]))
+
+		if self._predict_linear:
+			linear_target = np.load(os.path.join(self._linear_dir, meta[2]))
+		else:
+			linear_shape = *mel_target.shape[:-1], self._hparams.num_freq
+			linear_target = np.zeros(shape=linear_shape, dtype=mel_target.dtype)
+
 		return (input_data, mel_target, token_target, linear_target, len(mel_target))
 
 	def _prepare_batch(self, batches, outputs_per_step):

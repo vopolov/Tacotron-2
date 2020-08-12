@@ -136,7 +136,9 @@ def train(log_dir, args, hparams):
 
 	if hparams.predict_linear:
 		linear_dir = os.path.join(log_dir, 'linear-spectrograms')
-		os.makedirs(linear_dir, exist_ok=True)
+		# os.makedirs(linear_dir, exist_ok=True)
+		assert os.path.isdir(linear_dir),\
+			"No target linear spectrograms detected at:\n{}".format(linear_dir)
 
 	log('Checkpoint path: {}'.format(checkpoint_path))
 	log('Loading training data from: {}'.format(input_path))
