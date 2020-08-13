@@ -9,7 +9,7 @@ from infolog import log
 from sklearn.model_selection import train_test_split
 from tacotron.utils.text import text_to_sequence
 
-_batches_per_group = 64
+# _batches_per_group = 64
 
 class Feeder:
 	"""
@@ -165,7 +165,9 @@ class Feeder:
 			# Read a group of examples
 			n = self._hparams.tacotron_batch_size
 			r = self._hparams.outputs_per_step
-			examples = [self._get_next_example() for i in range(n * _batches_per_group)]
+			b = self._hparams.batches_per_group
+			# examples = [self._get_next_example() for i in range(n * _batches_per_group)]
+			examples = [self._get_next_example() for i in range(n * b)]
 
 			# Bucket examples based on similar output sequence length for efficiency
 			examples.sort(key=lambda x: x[-1])
