@@ -1,6 +1,8 @@
 import os
 import wave
 from datetime import datetime
+import platform
+import tempfile
 
 import numpy as np
 import pyaudio
@@ -166,18 +168,23 @@ class Synthesizer:
 				wav = audio.inv_preemphasis(wav, hparams.preemphasis, hparams.preemphasize)
 			else:
 				wav = audio.inv_mel_spectrogram(mels[0].T, hparams)
-			audio.save_wav(wav, 'temp.wav', sr=hparams.sample_rate) #Find a better way
 
-			if platform.system() == 'Linux':
-				#Linux wav reader
-				os.system('aplay temp.wav')
+			with tempfile.NamedTemporaryFile() as file:
+				# audio.save_wav(wav, 'temp.wav', sr=hparams.sample_rate) #Find a better way
+				audio.save_wav(wav, file.name, sr=hparams.sample_rate)
 
-			elif platform.system() == 'Windows':
-				#windows wav reader
-				os.system('start /min mplay32 /play /close temp.wav')
+				if platform.system() == 'Linux':
+					#Linux wav reader
+					# os.system('aplay temp.wav')
+					os.system('aplay {}'.format(file.name))
 
-			else:
-				raise RuntimeError('Your OS type is not supported yet, please add it to "tacotron/synthesizer.py, line-165" and feel free to make a Pull Request ;) Thanks!')
+				elif platform.system() == 'Windows':
+					#windows wav reader
+					# os.system('start /min mplay32 /play /close temp.wav')
+					os.system('start /min mplay32 /play /close {}'.format(file.name))
+
+				else:
+					raise RuntimeError('Your OS type is not supported yet, please add it to "tacotron/synthesizer.py, line-165" and feel free to make a Pull Request ;) Thanks!')
 
 			return
 
