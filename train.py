@@ -35,7 +35,7 @@ def prepare_run(args):
 	modified_hp = hparams.parse(args.hparams)
 	os.environ['TF_CPP_MIN_LOG_LEVEL'] = str(args.tf_log_level)
 	run_name = args.name or args.model
-	log_dir = os.path.join(args.base_dir, 'logs-{}'.format(run_name))
+	log_dir = os.path.join(args.logs_root_dir, 'logs-{}'.format(run_name))
 	os.makedirs(log_dir, exist_ok=True)
 	infolog.init(os.path.join(log_dir, 'Terminal_train_log'), run_name, args.slack_url)
 	return log_dir, modified_hp
@@ -100,6 +100,7 @@ def main():
 	parser.add_argument('--model', default='Tacotron-2')
 	parser.add_argument('--input_dir', default='training_data', help='folder to contain inputs sentences/targets')
 	parser.add_argument('--output_dir', default='output', help='folder to contain synthesized mel spectrograms')
+	parser.add_argument('--logs_root_dir', default='', help='logs root folder')
 	parser.add_argument('--mode', default='synthesis', help='mode for synthesis of tacotron after training')
 	parser.add_argument('--GTA', default='True', help='Ground truth aligned synthesis, defaults to True, only considered in Tacotron synthesis mode')
 	parser.add_argument('--restore', type=bool, default=True, help='Set this to False to do a fresh training')
