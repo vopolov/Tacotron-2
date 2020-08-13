@@ -29,6 +29,7 @@ class Feeder:
 		self._linear_dir = os.path.join(os.path.dirname(metadata_filename), 'linear')
 
 		self._predict_linear = os.path.isdir(self._linear_dir)
+		self._empty_target = np.empty(shape=(0, hparams.num_freq), dtype=np.float32)
 
 		with open(metadata_filename, encoding='utf-8') as f:
 			self._metadata = [line.strip().split('|') for line in f]
@@ -135,8 +136,7 @@ class Feeder:
 		if self._predict_linear:
 			linear_target = np.load(os.path.join(self._linear_dir, meta[2]))
 		else:
-			linear_shape = *mel_target.shape[:-1], self._hparams.num_freq
-			linear_target = np.zeros(shape=linear_shape, dtype=mel_target.dtype)
+			linear_target = self._empty_target
 
 		return (input_data, mel_target, token_target, linear_target, len(mel_target))
 
@@ -205,8 +205,7 @@ class Feeder:
 		if self._predict_linear:
 			linear_target = np.load(os.path.join(self._linear_dir, meta[2]))
 		else:
-			linear_shape = *mel_target.shape[:-1], self._hparams.num_freq
-			linear_target = np.zeros(shape=linear_shape, dtype=mel_target.dtype)
+			linear_target = self._empty_target
 
 		return (input_data, mel_target, token_target, linear_target, len(mel_target))
 

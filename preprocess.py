@@ -103,7 +103,7 @@ def main():
 	parser.add_argument('--output', default='training_data')
 	parser.add_argument('--n_jobs', type=int, default=cpu_count())
 	parser.add_argument('--skip_linear', action='store_true')  # don't generate linear
-															   # spectorgrams
+															   # spectrograms
 	args = parser.parse_args()
 
 	modified_hp = hparams.parse(args.hparams)
