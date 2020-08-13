@@ -16,10 +16,10 @@ def prepare_run(args):
 	os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 	run_name = args.name or args.tacotron_name or args.model
-	taco_checkpoint = os.path.join('logs-' + run_name, 'taco_' + args.checkpoint)
+	taco_checkpoint = os.path.join(args.logs_root_dir, 'logs-' + run_name, 'taco_' + args.checkpoint)
 
 	run_name = args.name or args.wavenet_name or args.model
-	wave_checkpoint = os.path.join('logs-' + run_name, 'wave_' + args.checkpoint)
+	wave_checkpoint = os.path.join(args.logs_root_dir, 'logs-' + run_name, 'wave_' + args.checkpoint)
 	return taco_checkpoint, wave_checkpoint, modified_hp
 
 def get_sentences(args):
@@ -50,6 +50,7 @@ def main():
 	parser.add_argument('--checkpoint', default='pretrained/', help='Path to model checkpoint')
 	parser.add_argument('--hparams', default='',
 		help='Hyperparameter overrides as a comma-separated list of name=value pairs')
+	parser.add_argument('--logs_root_dir', default='', help='logs root folder')
 	parser.add_argument('--name', help='Name of logging directory if the two models were trained together.')
 	parser.add_argument('--tacotron_name', help='Name of logging directory of Tacotron. If trained separately')
 	parser.add_argument('--wavenet_name', help='Name of logging directory of WaveNet. If trained separately')
