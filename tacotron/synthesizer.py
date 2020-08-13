@@ -169,7 +169,7 @@ class Synthesizer:
 			else:
 				wav = audio.inv_mel_spectrogram(mels[0].T, hparams)
 
-			with tempfile.NamedTemporaryFile() as file:
+			with tempfile.NamedTemporaryFile(delete=False) as file:
 				# audio.save_wav(wav, 'temp.wav', sr=hparams.sample_rate) #Find a better way
 				audio.save_wav(wav, file.name, sr=hparams.sample_rate)
 
