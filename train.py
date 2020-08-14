@@ -4,6 +4,8 @@ from time import sleep
 
 import infolog
 import tensorflow as tf
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+
 from hparams import hparams
 from infolog import log
 from tacotron.synthesize import tacotron_synthesize
