@@ -372,6 +372,10 @@ hparams = tf.contrib.training.HParams(
 	wavenet_debug_wavs = ['training_data/audio/audio-LJ001-0008.npy'], #Path to debug audios. Must be multiple of wavenet_num_gpus.
 	wavenet_debug_mels = ['training_data/mels/mel-LJ001-0008.npy'], #Path to corresponding mels. Must be of same length and order as wavenet_debug_wavs.
 
+	#Stepwise attention
+	stepwise = True,  # Flag chooses between location sensitive and stepwise types of attention
+	restore_attention = False,  # Set to False to train attention layer from scratch
+
 	)
 
 def hparams_debug_string():
