@@ -206,7 +206,25 @@ def train(log_dir, args, hparams):
 
 					if (checkpoint_state and checkpoint_state.model_checkpoint_path):
 						log('Loading checkpoint {}'.format(checkpoint_state.model_checkpoint_path), slack=True)
-						saver.restore(sess, checkpoint_state.model_checkpoint_path)
+						# Skip attention loading if restore_attention = False
+						if hparams.restore_attention:
+							saver.restore(sess, checkpoint_state.model_checkpoint_path)
+						else:  # create custom saver just to load subset of weights
+							attention_vars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES,
+								scope=r'.*?[A|a]ttention',
+							)
+							all_vars = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)
+							vars_to_load = list(set(all_vars) - set(attention_vars))
+
+							print('-' * 20)
+							print('Vars not loaded:')
+							for v in attention_vars:
+								print(v.name)
+							print('-' * 20)
+
+							rest = tf.train.Saver(vars_to_load)
+							rest.restore(sess, checkpoint_state.model_checkpoint_path)
+						# saver.restore(sess, checkpoint_state.model_checkpoint_path)
 
 					else:
 						log('No model to load at {}'.format(save_dir), slack=True)
