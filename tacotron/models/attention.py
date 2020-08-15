@@ -237,22 +237,24 @@ class LocationSensitiveAttention(BahdanauAttention):
 
 		return alignments, next_state, max_attentions
 
-'''
-Implementation for https://arxiv.org/abs/1906.00672
 
-Tips: The code could be directly used in place of BadahnauMonotonicAttention in Tensorflow codes. Similar to its 
-base class in the Tensorflow seq2seq codebase,  you may use "hard" for hard inference, or "parallel" for training or 
-soft inference. "recurrent" mode in BadahnauMonotonicAttention is not supported. 
 
-If you have already trained another model using BadahnauMonotonicAttention, the model could be reused, otherwise you 
-possibly have to tune the score_bias_init, which, similar to that in Raffel et al., 2017, is determined a priori to 
-suit the moving speed of the alignments, i.e. speed of speech of your training corpus in TTS cases. So 
-score_bias_init=3.5, is a good one for our data, but not necessarily for yours, and our experiments find that the 
-results are sensitive to this bias: When the parameter is deviated from the best value, by, say, a small amount of 
-0.5, the whole training process may fail. sigmoid_noise=2.0 is enough in our experiments, but if you found that the 
-resultant alignments are far from binary, adding more noise (or annealing the noise) might be useful. Other 
-hyperparameters in our experiments simply follow the original Tacotron2 settings, and they work. 
-'''
+# source : https://gist.github.com/mutiann/38a7638f75c21479582d7391490df37c
+# Implementation for https://arxiv.org/abs/1906.00672
+
+# Tips: The code could be directly used in place of BadahnauMonotonicAttention in Tensorflow codes. Similar to its 
+# base class in the Tensorflow seq2seq codebase,  you may use "hard" for hard inference, or "parallel" for training or 
+# soft inference. "recurrent" mode in BadahnauMonotonicAttention is not supported. 
+
+# If you have already trained another model using BadahnauMonotonicAttention, the model could be reused, otherwise you 
+# possibly have to tune the score_bias_init, which, similar to that in Raffel et al., 2017, is determined a priori to 
+# suit the moving speed of the alignments, i.e. speed of speech of your training corpus in TTS cases. So 
+# score_bias_init=3.5, is a good one for our data, but not necessarily for yours, and our experiments find that the 
+# results are sensitive to this bias: When the parameter is deviated from the best value, by, say, a small amount of 
+# 0.5, the whole training process may fail. sigmoid_noise=2.0 is enough in our experiments, but if you found that the 
+# resultant alignments are far from binary, adding more noise (or annealing the noise) might be useful. Other 
+# hyperparameters in our experiments simply follow the original Tacotron2 settings, and they work. 
+
 def monotonic_stepwise_attention(p_choose_i, previous_attention, mode):
     # p_choose_i, previous_alignments, previous_score: [batch_size, memory_size]
     # p_choose_i: probability to keep attended to the last attended entry i
