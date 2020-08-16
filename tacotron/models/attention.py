@@ -238,7 +238,6 @@ class LocationSensitiveAttention(BahdanauAttention):
 		return alignments, next_state, max_attentions
 
 
-
 # source : https://gist.github.com/mutiann/38a7638f75c21479582d7391490df37c
 # Implementation for https://arxiv.org/abs/1906.00672
 

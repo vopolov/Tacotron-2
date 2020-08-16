@@ -374,8 +374,10 @@ hparams = tf.contrib.training.HParams(
 
 	#Stepwise attention
 	stepwise = True,  # Flag chooses between location sensitive and stepwise types of attention
-	restore_attention = False,  # Set to False to train attention layer from scratch
-
+	restore_attention = True,  # Set to False to train attention layer from scratch
+	stepwise_mode = 'parallel',  # or 'hard' for one hot alignments
+	sigmoid_noise = 0.0,  # magnitude of the normal noise added to the energy score before passing through the sigmoid activation
+						  # change it to make probability choices closer to binary
 	)
 
 def hparams_debug_string():

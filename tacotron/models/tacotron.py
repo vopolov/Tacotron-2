@@ -138,7 +138,9 @@ class Tacotron():
 							cumulate_weights=hp.cumulative_weights)
 					else:
 						attention_mechanism = BahdanauStepwiseMonotonicAttention(hp.attention_dim, encoder_outputs,
-							memory_sequence_length=tf.reshape(tower_input_lengths[i], [-1]))
+							memory_sequence_length=tf.reshape(tower_input_lengths[i], [-1]),
+							sigmoid_noise=self._hparams.sigmoid_noise,
+							mode=self._hparams.stepwise_mode)
 					#Decoder LSTM Cells
 					decoder_lstm = DecoderRNN(is_training, layers=hp.decoder_layers,
 						size=hp.decoder_lstm_units, zoneout=hp.tacotron_zoneout_rate, scope='decoder_LSTM')
