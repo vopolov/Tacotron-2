@@ -276,11 +276,17 @@ def _stepwise_monotonic_probability_fn(score, previous_alignments, sigmoid_noise
         noise = random_ops.random_normal(array_ops.shape(score), dtype=score.dtype,
                                          seed=seed)
         score += sigmoid_noise * noise
+    # if mode == "hard":
+    #     # When mode is hard, use a hard sigmoid
+    #     p_choose_i = math_ops.cast(score > 0, score.dtype)
+    # else:
+    #     p_choose_i = math_ops.sigmoid(score)
+    p_choose_i = math_ops.sigmoid(score)
     if mode == "hard":
-        # When mode is hard, use a hard sigmoid
-        p_choose_i = math_ops.cast(score > 0, score.dtype)
-    else:
-        p_choose_i = math_ops.sigmoid(score)
+        uniform = random_ops.random_uniform(array_ops.shape(score), dtype=score.dtype,
+                                            seed=seed)
+        p_choose_i = math_ops.cast(uniform < p_choose_i, dtype=score.dtype)
+
     alignments = monotonic_stepwise_attention(p_choose_i, previous_alignments, mode)
     return alignments
 
